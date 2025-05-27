@@ -1,0 +1,99 @@
+/* AboutUsSection.css */
+
+.about-us-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  gap: 40px;
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+}
+
+/* Navigation Menu */
+.nav-menu {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.nav-button {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: #f0f0f0;
+}
+
+/* About Us Section */
+.about-us-section {
+  border: 1px solid #ccc;
+  padding: 30px;
+  text-align: center;
+  background-color: white;
+}
+
+.about-us-section h2 {
+  font-size: 24px;
+  margin: 0;
+  font-weight: normal;
+}
+
+/* Image Gallery */
+.image-gallery {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.image-container {
+  flex: 1;
+  aspect-ratio: 1 / 1;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.image-placeholder {
+  color: #666;
+  font-size: 18px;
+}
+
+/* Description Section */
+.description-section {
+  border: 1px solid #ccc;
+  padding: 30px;
+  text-align: center;
+  background-color: white;
+}
+
+.description-section p {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-menu {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .image-gallery {
+    flex-direction: column;
+  }
+  
+  .image-container {
+    width: 100%;
+  }
+}
