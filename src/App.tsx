@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import NavBar from './components/NavBar/NavBar'
+
+import Homepage from './components/Homepage/Homepage'
+import MeetingRoom from './components/MeetingRoom/MeetingRoom'
+import AboutUs from './components/AboutUs/AboutUs'
+import RoomBooking from './components/RoomBooking/RoomBooking'
+import SignUp from './components/SignUp/SignUp'
+import Register from './components/Register/Register'
+import RoomDisplay from './components/RoomDisplay/RoomDisplay'
+import RoomFullView from './components/RoomFullView/RoomFullView'
+import Checkout from './components/Checkout/Checkout'
+import ErrorPage from './components/ErrorPage/ErrorPage'
+
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Router>
+      <NavBar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/meeting-room" element={<MeetingRoom />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/room-booking" element={<RoomBooking />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/room-display" element={<RoomDisplay />} />
+          <Route path="/room/:id" element={<RoomFullView />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="*" element={<ErrorPage />} />
+        </Routes>
+      </main>
+    </Router>
   )
 }
-
-export default App
