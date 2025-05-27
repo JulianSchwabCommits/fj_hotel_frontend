@@ -1,20 +1,12 @@
-import React from 'react';
-import './AboutUs.css';
+import React from 'react'
+import './AboutUs.css'
 
-const AboutUs: React.FC = () => {
+export default function AboutUs() {
   return (
-    <div className="about-us-container">
-      {/* Navigation Menu */}
-      <nav className="nav-menu">
-        <button className="nav-button">Homepage</button>
-        <button className="nav-button">Meeting Rooms</button>
-        <button className="nav-button">Sport Booking</button>
-        <button className="nav-button">Sign Up</button>
-      </nav>
-
+    <div className="about-container">
       {/* About Us Section */}
       <div className="about-us">
-        <h2>About US</h2>
+        <h2>About Us</h2>
       </div>
 
       {/* Image Gallery */}
@@ -32,7 +24,5 @@ const AboutUs: React.FC = () => {
         <p>Description</p>
       </div>
     </div>
-  );
-};
-
-export default AboutUs;
+  )
+}
