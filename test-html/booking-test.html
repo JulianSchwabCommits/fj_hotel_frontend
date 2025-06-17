@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel API Test - Room Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .form-group.full-width {
+            flex: 100%;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        label .required {
+            color: #e74c3c;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .test-button {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background: #229954;
+        }
+        .test-button.secondary {
+            background: #3498db;
+        }
+        .test-button.secondary:hover {
+            background: #2980b9;
+        }
+        .response-container {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background: #cce7ff;
+            border: 1px solid #99d1ff;
+            color: #004085;
+        }
+        .url-display {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+        .validation-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 3px;
+        }
+        .nav-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .nav-buttons .test-button {
+            width: auto;
+            margin: 5px;
+        }
+        .room-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .room-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+        .room-card:hover {
+            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+        }
+        .room-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .room-card p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .room-price {
+            font-size: 18px;
+            color: #27ae60;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .room-card button {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .order-section {
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .user-info {
+            background: #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏨 Room Booking System</h1>
+        
+        <div class="nav-buttons">
+            <button class="test-button secondary" onclick="window.location.href='login-test.html'">Go to Login</button>
+            <button class="test-button secondary" onclick="window.location.href='available-rooms-test.html'">Check Available Rooms</button>
+            <button class="test-button secondary" onclick="window.location.href='order-history.html'">View My Bookings</button>
+            <button class="test-button secondary" onclick="window.location.href='index.html'">Back to Dashboard</button>
+        </div>
+        
+        <div class="user-info" id="userInfo">
+            <h3>Current User</h3>
+            <p><strong>First Name:</strong> <span id="userFirstName">Not logged in</span></p>
+            <p><strong>Last Name:</strong> <span id="userLastName"></span></p>
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            <p><strong>User ID:</strong> <span id="userId"></span></p>
+            <div id="loginButtons">
+                <button class="test-button" id="simulateLogin">Simulate Login</button>
+                <button class="test-button secondary" onclick="window.open('login-test.html', '_self')">Log In</button>
+            </div>
+            <div id="loggedInButtons" style="display: none;">
+                <button class="test-button warning" id="logoutButton">Log Out</button>
+            </div>
+        </div>
+        
+        <div class="form-container">
+            <h3>Search for Available Rooms</h3>
+            <form id="searchForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="checkinDate">Check-in Date & Time <span class="required">*</span></label>
+                        <input type="datetime-local" id="checkinDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="checkoutDate">Check-out Date & Time <span class="required">*</span></label>
+                        <input type="datetime-local" id="checkoutDate" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="capacity">Minimum Capacity</label>
+                        <input type="number" id="capacity" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="roomType">Room Type</label>
+                        <select id="roomType">
+                            <option value="">Any</option>
+                            <option value="room">Guest Room</option>
+                            <option value="meeting_room">Meeting Room</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="">Any</option>
+                            <option value="standard">Standard</option>
+                            <option value="deluxe">Deluxe</option>
+                            <option value="suite">Suite</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="submit" class="test-button">Search Available Rooms</button>
+                </div>
+            </form>
+        </div>
+        
+        <div id="roomResults" style="display: none;">
+            <h3>Available Rooms</h3>
+            <div id="roomList" class="room-list">
+                <!-- Rooms will be listed here -->
+            </div>
+        </div>
+        
+        <div class="order-section" id="orderForm" style="display: none;">
+            <h3>Book Selected Room</h3>
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <h4 id="selectedRoomName"></h4>
+                        <p><strong>Room ID:</strong> <span id="selectedRoomId"></span></p>
+                        <p><strong>Capacity:</strong> <span id="selectedRoomCapacity"></span> people</p>
+                        <p><strong>Price:</strong> $<span id="selectedRoomPrice"></span> per night</p>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookingCheckinDate">Check-in Date & Time</label>
+                        <input type="datetime-local" id="bookingCheckinDate" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingCheckoutDate">Check-out Date & Time</label>
+                        <input type="datetime-local" id="bookingCheckoutDate" disabled>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment Method <span class="required">*</span></label>
+                        <select id="paymentMethod" required>
+                            <option value="credit_card">Credit Card</option>
+                            <option value="cash">Cash</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="button" class="test-button" id="confirmBooking">Confirm Booking</button>
+                    <button type="button" class="test-button secondary" id="cancelBooking">Cancel</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="orderResult" style="display: none;"></div>
+        
+        <div id="currentUrl" class="url-display" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080';
+        let currentUser = null;
+        let availableRooms = [];
+        let selectedRoom = null;
+
+        // Set default dates
+        window.onload = function() {
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const dayAfter = new Date(tomorrow);
+            dayAfter.setDate(dayAfter.getDate() + 1);
+            
+            document.getElementById('checkinDate').value = tomorrow.toISOString().slice(0, 16);
+            document.getElementById('checkoutDate').value = dayAfter.toISOString().slice(0, 16);
+            
+            // Check for stored user
+            const storedUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (storedUser) {
+                setLoggedInUser(storedUser);
+            }
+        };
+        
+        // Simulate login
+        document.getElementById('simulateLogin').addEventListener('click', function() {
+            const user = {
+                userId: 1,
+                firstName: 'Test',
+                lastName: 'User',
+                email: 'test@example.com'
+            };
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            setLoggedInUser(user);
+        });
+        
+        // Logout functionality
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            document.getElementById('userFirstName').textContent = 'Not logged in';
+            document.getElementById('userLastName').textContent = '';
+            document.getElementById('userEmail').textContent = '';
+            document.getElementById('userId').textContent = '';
+            document.getElementById('loginButtons').style.display = 'block';
+            document.getElementById('loggedInButtons').style.display = 'none';
+        });
+        
+        function setLoggedInUser(user) {
+            currentUser = user;
+            document.getElementById('userFirstName').textContent = user.firstName;
+            document.getElementById('userLastName').textContent = user.lastName;
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userId').textContent = user.userId;
+            document.getElementById('loginButtons').style.display = 'none';
+            document.getElementById('loggedInButtons').style.display = 'block';
+        }
+
+        // Search form submission
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            searchRooms();
+        });
+        
+        async function searchRooms() {
+            const checkinDate = document.getElementById('checkinDate').value;
+            const checkoutDate = document.getElementById('checkoutDate').value;
+            const capacity = document.getElementById('capacity').value || null;
+            const roomType = document.getElementById('roomType').value || null;
+            const category = document.getElementById('category').value || null;
+            
+            if (!checkinDate || !checkoutDate) {
+                alert('Please select check-in and check-out dates');
+                return;
+            }
+            
+            let url = `${API_BASE}/rooms/available?checkin_date=${encodeURIComponent(checkinDate)}&checkout_date=${encodeURIComponent(checkoutDate)}`;
+            
+            if (capacity) url += `&capacity=${capacity}`;
+            if (roomType) url += `&room_type=${roomType}`;
+            if (category) url += `&category=${category}`;
+            
+            document.getElementById('currentUrl').innerHTML = `<strong>API URL:</strong> ${url}<br><strong>Method:</strong> GET`;
+            document.getElementById('currentUrl').style.display = 'block';
+            
+            try {
+                document.getElementById('orderResult').innerHTML = '<div class="response-container loading">Searching for available rooms...</div>';
+                document.getElementById('orderResult').style.display = 'block';
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (Array.isArray(data)) {
+                    availableRooms = data;
+                    displayRooms(data);
+                    document.getElementById('orderResult').style.display = 'none';
+                } else {
+                    console.error('Server response:', data);
+                    document.getElementById('orderResult').innerHTML = `
+                        <div class="response-container error">
+                            <h4>❌ Error Searching Rooms</h4>
+                            <p><strong>Message:</strong> ${typeof data === 'string' ? data : 'Invalid response from server'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error searching rooms:', error);
+                document.getElementById('orderResult').innerHTML = `
+                    <div class="response-container error">
+                    <h4>❌ Network Error</h4>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p>Please check if the server is running on ${API_BASE}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function displayRooms(rooms) {
+            const roomList = document.getElementById('roomList');
+            roomList.innerHTML = '';
+            
+            if (rooms.length === 0) {
+                roomList.innerHTML = '<p>No rooms available for the selected criteria</p>';
+            } else {
+                rooms.forEach(room => {
+                    const roomCard = document.createElement('div');
+                    roomCard.className = 'room-card';
+                    roomCard.innerHTML = `
+                        <h3>${room.roomName}</h3>
+                        <p><strong>Type:</strong> ${formatValue(room.roomType)}</p>
+                        <p><strong>Category:</strong> ${formatValue(room.category)}</p>
+                        <p><strong>Capacity:</strong> ${room.capacity} people</p>
+                        <div class="room-price">$${room.price} per night</div>
+                        <button class="test-button" onclick="selectRoom(${room.roomId})">Book This Room</button>
+                    `;
+                    roomList.appendChild(roomCard);
+                });
+            }
+            
+            document.getElementById('roomResults').style.display = 'block';
+            document.getElementById('orderForm').style.display = 'none';
+        }
+        
+        function formatValue(str) {
+            if (!str) return '';
+            return str.charAt(0).toUpperCase() + str.slice(1).replace('_', ' ');
+        }
+        
+        function selectRoom(roomId) {
+            if (!currentUser) {
+                alert('Please log in first');
+                return;
+            }
+            
+            selectedRoom = availableRooms.find(room => room.roomId === roomId);
+            
+            if (selectedRoom) {
+                document.getElementById('selectedRoomName').textContent = selectedRoom.roomName;
+                document.getElementById('selectedRoomId').textContent = selectedRoom.roomId;
+                document.getElementById('selectedRoomCapacity').textContent = selectedRoom.capacity;
+                document.getElementById('selectedRoomPrice').textContent = selectedRoom.price;
+                
+                document.getElementById('bookingCheckinDate').value = document.getElementById('checkinDate').value;
+                document.getElementById('bookingCheckoutDate').value = document.getElementById('checkoutDate').value;
+                
+                document.getElementById('orderForm').style.display = 'block';
+                document.getElementById('orderForm').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        document.getElementById('cancelBooking').addEventListener('click', function() {
+            document.getElementById('orderForm').style.display = 'none';
+        });
+        
+        document.getElementById('confirmBooking').addEventListener('click', async function() {
+            if (!currentUser) {
+                alert('Please log in first');
+                return;
+            }
+            
+            if (!selectedRoom) {
+                alert('Please select a room first');
+                return;
+            }
+            
+            const orderData = {
+                userId: currentUser.userId,
+                roomId: selectedRoom.roomId,
+                checkinDate: document.getElementById('bookingCheckinDate').value,
+                checkoutDate: document.getElementById('bookingCheckoutDate').value,
+                paymentMethod: document.getElementById('paymentMethod').value
+            };
+            
+            const url = `${API_BASE}/api/orders`;
+            
+            document.getElementById('currentUrl').innerHTML = `<strong>API URL:</strong> ${url}<br><strong>Method:</strong> POST<br><strong>Body:</strong> ${JSON.stringify(orderData, null, 2)}`;
+            document.getElementById('currentUrl').style.display = 'block';
+            
+            document.getElementById('orderResult').innerHTML = '<div class="response-container loading">Processing your booking...</div>';
+            document.getElementById('orderResult').style.display = 'block';
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('orderResult').innerHTML = `
+                        <div class="response-container success">
+                            <h4>✅ Booking Confirmed!</h4>
+                            <p><strong>Order ID:</strong> ${data.orderId}</p>
+                            <p><strong>Room:</strong> ${data.roomName}</p>
+                            <p><strong>Check-in:</strong> ${new Date(data.checkinDate).toLocaleString()}</p>
+                            <p><strong>Check-out:</strong> ${new Date(data.checkoutDate).toLocaleString()}</p>
+                            <p><strong>Status:</strong> ${formatValue(data.status)}</p>
+                            <hr>
+                            <strong>Full Response:</strong><br>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                    document.getElementById('orderForm').style.display = 'none';
+                } else {
+                    document.getElementById('orderResult').innerHTML = `
+                        <div class="response-container error">
+                            <h4>❌ Booking Failed</h4>
+                            <p><strong>Error:</strong> ${data.message || 'Unknown error'}</p>
+                            <hr>
+                            <strong>Full Response:</strong><br>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('orderResult').innerHTML = `
+                    <div class="response-container error">
+                        <h4>❌ Network Error</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p>Please check if the server is running on ${API_BASE}</p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('orderResult').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel API Test - Room Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100px;
+            text-align: center;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .quick-buttons {
+            margin: 20px 0;
+        }
+        .quick-buttons button {
+            background: #27ae60;
+            margin: 5px;
+        }
+        .quick-buttons button:hover {
+            background: #229954;
+        }
+        .room-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 25px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .room-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .room-details {
+            color: #666;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .room-details strong {
+            color: #333;
+        }
+        .price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #27ae60;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .room-type {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 10px 5px;
+        }
+        .room-type.room {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .room-type.meeting_room {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        .category {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 10px 5px;
+        }
+        .category.standard {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        .category.deluxe {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+        .category.suite {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+        .loading, .error {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+        }
+        .error { color: #e74c3c; }
+        .loading { color: #3498db; }
+        .url-display {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        .badges {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 Hotel Room Details</h1>
+        
+        <div class="form-container">
+            <h3>Get Room by ID</h3>
+            <div class="form-group">
+                <label for="roomId">Room ID</label>
+                <input type="number" id="roomId" min="1" max="50" value="1">
+            </div>
+            
+            <button class="test-button" onclick="getRoomDetails()">Get Room Details</button>
+            
+            <div class="quick-buttons">
+                <strong>Quick Tests:</strong><br>
+                <button class="test-button quick-buttons" onclick="testRoom(1)">Standard Room 1</button>
+                <button class="test-button quick-buttons" onclick="testRoom(3)">Deluxe Room 1</button>
+                <button class="test-button quick-buttons" onclick="testRoom(5)">Suite Room 1</button>
+                <button class="test-button quick-buttons" onclick="testRoom(31)">Standard Meeting Room</button>
+                <button class="test-button quick-buttons" onclick="testRoom(35)">Suite Meeting Room</button>
+                <button class="test-button quick-buttons" onclick="testRoom(999)">Test 404 Error</button>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button class="test-button" onclick="window.open('all-rooms-test.html', '_blank')">View All Rooms</button>
+                <button class="test-button" onclick="window.open('available-rooms-test.html', '_blank')">Search Available Rooms</button>
+            </div>
+            
+            <div id="currentUrl" class="url-display" style="display: none;"></div>
+        </div>
+        
+        <div id="results">
+            <div class="loading">Enter a Room ID and click "Get Room Details"</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080';
+
+        function testRoom(roomId) {
+            document.getElementById('roomId').value = roomId;
+            getRoomDetails();
+        }
+
+        async function getRoomDetails() {
+            const roomId = document.getElementById('roomId').value;
+            
+            if (!roomId) {
+                alert('Please enter a Room ID');
+                return;
+            }
+
+            const url = `${API_BASE}/rooms/${roomId}`;
+            
+            // Show current URL
+            document.getElementById('currentUrl').innerHTML = `<strong>API URL:</strong> ${url}`;
+            document.getElementById('currentUrl').style.display = 'block';
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `<div class="loading">Loading room ${roomId}...</div>`;
+
+            try {
+                const response = await fetch(url);
+                
+                if (response.status === 404) {
+                    resultsDiv.innerHTML = `<div class="error">❌ Room with ID ${roomId} not found</div>`;
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const room = await response.json();
+                displayRoom(room);
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayRoom(room) {
+            const resultsDiv = document.getElementById('results');
+            
+            resultsDiv.innerHTML = `
+                <div class="room-card">
+                    <div class="room-name">${room.roomName}</div>
+                    
+                    <div class="badges">
+                        <span class="room-type ${room.roomType}">${room.roomType.replace('_', ' ')}</span>
+                        <span class="category ${room.category}">${room.category}</span>
+                    </div>
+                    
+                    <div class="room-details">
+                        <strong>🏠 Room ID:</strong> ${room.roomId}
+                    </div>
+                    <div class="room-details">
+                        <strong>👥 Capacity:</strong> ${room.capacity} people
+                    </div>
+                    <div class="room-details">
+                        <strong>🏷️ Category:</strong> ${room.category.charAt(0).toUpperCase() + room.category.slice(1)}
+                    </div>
+                    <div class="room-details">
+                        <strong>🏨 Type:</strong> ${room.roomType === 'meeting_room' ? 'Meeting Room' : 'Hotel Room'}
+                    </div>
+                    <div class="room-details">
+                        <strong>🖼️ Picture ID:</strong> ${room.pictureId}
+                    </div>
+                    
+                    <div class="price">$${room.price}/night</div>
+                </div>
+            `;
+        }
+
+        // Load room 1 by default
+        window.onload = () => {
+            document.getElementById('roomId').value = 1;
+            getRoomDetails();
+        };
+    </script>
+</body>
+</html>

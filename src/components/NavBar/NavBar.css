@@ -1,5 +1,5 @@
 /* NavBar Styles */
-nav {
+.main-nav {
   background: #f8f9fa;
   padding: 1.5rem 2rem;
   border-bottom: 1px solid #e9ecef;
@@ -8,15 +8,16 @@ nav {
   z-index: 1000;
 }
 
-nav ul {
+.main-nav ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 nav li {
@@ -54,6 +55,82 @@ nav a.active {
   background: #007bff;
   color: white;
   border-color: #007bff;
+}
+
+/* User Menu Dropdown */
+.user-menu {
+  position: relative;
+  cursor: pointer;
+}
+
+.user-menu .welcome-text {
+  display: inline-block;
+  color: #495057;
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.user-menu:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 180px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dropdown-content a,
+.dropdown-content button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  color: #495057;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f3f5;
+  box-sizing: border-box;
+}
+
+.dropdown-content a:last-child,
+.dropdown-content button:last-child {
+  border-bottom: none;
+}
+
+.dropdown-content a:hover,
+.dropdown-content button:hover {
+  background-color: #f8f9fa;
+}
+
+/* Book Now Button */
+.book-now-button button {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 0.95rem;
+}
+
+.book-now-button button:hover {
+  background-color: #219653;
 }
 
 /* Responsive Design */

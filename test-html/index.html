@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel API Test Suite</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+        .test-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .test-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: #007bff;
+        }
+        .test-card h3 {
+            color: #333;
+            margin: 0 0 15px 0;
+            font-size: 1.3em;
+        }
+        .test-card p {
+            color: #666;
+            margin: 0 0 20px 0;
+            line-height: 1.5;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .icon {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        .api-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .api-info h3 {
+            color: #0066cc;
+            margin-top: 0;
+        }
+        .endpoint {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 5px 0;
+            display: inline-block;
+        }
+        .status {
+            background: #27ae60;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏨 Hotel API Test Suite</h1>
+        <p class="subtitle">Interactive testing interface for the FJ Hotel Backend API</p>
+          <div class="test-cards">
+            <div class="test-card" onclick="window.open('login-test.html', '_blank')">
+                <div class="icon">🔐</div>
+                <h3>User Login</h3>
+                <p>Test user authentication with existing accounts</p>
+                <span class="endpoint">POST /api/auth/signin</span><br>
+                <span class="status">✅ Implemented</span><br><br>
+                <a href="login-test.html" class="test-button" target="_blank">Test Now</a>
+            </div>
+            
+            <div class="test-card" onclick="window.open('signup-test.html', '_blank')">
+                <div class="icon">👤</div>
+                <h3>User Signup</h3>
+                <p>Register new user accounts with validation</p>
+                <span class="endpoint">POST /api/auth/signup</span><br>
+                <span class="status">✅ Implemented</span><br><br>
+                <a href="signup-test.html" class="test-button" target="_blank">Test Now</a>
+            </div>
+            
+            <div class="test-card" onclick="window.open('all-rooms-test.html', '_blank')">
+                <div class="icon">🏨</div>
+                <h3>All Rooms</h3>
+                <p>View complete list of all hotel rooms and meeting rooms with details</p>
+                <span class="endpoint">GET /rooms</span><br>
+                <span class="status">✅ Implemented</span><br><br>
+                <a href="all-rooms-test.html" class="test-button" target="_blank">Test Now</a>
+            </div>
+            
+            <div class="test-card" onclick="window.open('room-details-test.html', '_blank')">
+                <div class="icon">🏠</div>
+                <h3>Room Details</h3>
+                <p>Get detailed information for a specific room by ID</p>
+                <span class="endpoint">GET /rooms/:id</span><br>
+                <span class="status">✅ Implemented</span><br><br>
+                <a href="room-details-test.html" class="test-button" target="_blank">Test Now</a>
+            </div>
+            
+            <div class="test-card" onclick="window.open('available-rooms-test.html', '_blank')">
+                <div class="icon">📅</div>
+                <h3>Available Rooms</h3>
+                <p>Search for available rooms by date range with optional filters</p>
+                <span class="endpoint">GET /rooms/available</span><br>
+                <span class="status">✅ Implemented</span><br><br>
+                <a href="available-rooms-test.html" class="test-button" target="_blank">Test Now</a>
+            </div>
+            
+            <div class="test-card" onclick="window.open('booking-test.html', '_blank')">
+                <div class="icon">🛎️</div>
+                <h3>Book a Room</h3>
+                <p>Search for available rooms and make a booking</p>
+                <span class="endpoint">POST /api/orders</span><br>
+                <span class="status">✅ Implemented</span><br><br>
+                <a href="booking-test.html" class="test-button" target="_blank">Test Now</a>
+            </div>
+            
+            <div class="test-card" onclick="window.open('order-history.html', '_blank')">
+                <div class="icon">🧾</div>
+                <h3>Order History</h3>
+                <p>View and manage your booking history</p>
+                <span class="endpoint">GET /api/orders/user/:id</span><br>
+                <span class="status">✅ Implemented</span><br><br>
+                <a href="order-history.html" class="test-button" target="_blank">Test Now</a>
+            </div>
+        </div>
+        
+        <div class="api-info">
+            <h3>📋 API Endpoints Implemented</h3>
+            <p><strong>Base URL:</strong> <span class="endpoint">http://localhost:8080</span></p>
+            
+            <div style="margin: 15px 0;">
+                <strong>✅ Room Management:</strong><br>
+                <span class="endpoint">GET /rooms</span> - List all rooms<br>
+                <span class="endpoint">GET /rooms/:id</span> - Get room details<br>
+                <span class="endpoint">GET /rooms/available</span> - Check availability with filters
+            </div>
+            
+            <div style="margin: 15px 0;">
+                <strong>✅ Authentication:</strong><br>
+                <span class="endpoint">POST /api/auth/signup</span> - User registration<br>
+                <span class="endpoint">POST /api/auth/signin</span> - User login
+            </div>
+            
+            <div style="margin: 15px 0;">
+                <strong>✅ Bookings & Orders:</strong><br>
+                <span class="endpoint">POST /api/orders</span> - Create a new booking<br>
+                <span class="endpoint">GET /api/orders/:id</span> - Get booking details<br>
+                <span class="endpoint">GET /api/orders/user/:id</span> - Get user's bookings<br>
+                <span class="endpoint">PUT /api/orders/:id/cancel</span> - Cancel a booking<br>
+                <span class="endpoint">PUT /api/orders/:id/status</span> - Update booking status
+            </div>
+            
+            <div style="margin: 15px 0;">
+                <strong>🚀 Features:</strong><br>
+                • CORS enabled for cross-origin requests<br>
+                • JSON responses with proper HTTP status codes<br>
+                • Date validation and error handling<br>
+                • Optional query parameters for filtering<br>
+                • Room availability based on existing bookings
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; color: #666;">
+            <p>💡 <strong>Tip:</strong> Make sure your Spring Boot application is running on port 8080</p>
+            <p>🔧 Start with: <span class="endpoint">./mvnw spring-boot:run</span></p>
+        </div>
+    </div>
+</body>
+</html>

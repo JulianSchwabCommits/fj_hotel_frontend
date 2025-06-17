@@ -1,54 +1,57 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FaBars } from 'react-icons/fa'
 import './Homepage.css'
 
-const slides = [
-  { id: 1, label: 'Slide 1' },
-  { id: 2, label: 'Slide 2' },
-  { id: 3, label: 'Slide 3' }
-]
-
 export default function Homepage() {
-  const [current, setCurrent] = useState(0)
   const navigate = useNavigate()
 
-  const prevSlide = () => {
-    setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
+  const handleBookClick = () => {
+    // Check if user is logged in before navigating
+    const user = localStorage.getItem('currentUser')
+    if (user) {
+      navigate('/book')
+    } else {
+      navigate('/auth', { state: { from: '/book' } })
+    }
   }
 
-  const nextSlide = () => {
-    setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
+  const handleMenuClick = () => {
+    // This would toggle a menu in a real implementation
+    console.log('Menu clicked')
   }
 
-  const handleBookNow = () => {
-    navigate('/room-booking')
-  }
-
-  // Erweiterung: Zusatzinfos, Features, Call-to-Action
   return (
     <div className="homepage-container">
-      <h1>Homepage</h1>
-      <p className="homepage-intro">
-        Willkommen im FJ Hotel! Entdecken Sie Komfort, Stil und erstklassigen Service im Herzen der Stadt.
-      </p>
-      <div className="slideshow">
-        <button className="arrow left" onClick={prevSlide}>&lt;</button>
-        <div className="slide-placeholder">{slides[current].label}</div>
-        <button className="arrow right" onClick={nextSlide}>&gt;</button>
+      <div className="top-menu">
+        <button className="menu-button" onClick={handleMenuClick}>
+          <FaBars />
+        </button>
+        <div className="menu-items">
+          <div className="menu-item" onClick={() => navigate('/book')}>Book a Room</div>
+          <div className="menu-item" onClick={() => navigate('/auth')}>Login / Register</div>
+        </div>
       </div>
-      <section className="homepage-features">
-        <h2>Unsere Highlights</h2>
-        <ul>
-          <li>✔️ Moderne Zimmer & Suiten</li>
-          <li>✔️ Meeting- & Konferenzräume</li>
-          <li>✔️ Wellness & Fitnessbereich</li>
-          <li>✔️ Zentrale Lage & Parkmöglichkeiten</li>
-        </ul>
-      </section>
-      <section className="homepage-cta">
-        <h3>Jetzt Zimmer sichern und den Aufenthalt genießen!</h3>
-        <button className="book-now-btn" onClick={handleBookNow}>Jetzt buchen</button>
-      </section>
+      
+      <div className="hotel-content">
+        <h1 className="hotel-name">Hotel</h1>
+        <h2 className="hotel-subtitle">FJ</h2>
+        <div className="hotel-images">
+          <img 
+            src="Images/Website/image.png" 
+            alt="Hotel Exterior" 
+            className="hotel-image exterior"
+          />
+          <img 
+            src="Images/Website/Lamp.png" 
+            alt="Hotel Interior" 
+            className="hotel-image interior"
+          />
+        </div>
+      </div>
+      
+      <div className="book-sidebar" onClick={handleBookClick}>
+        <div className="book-text">BOOK</div>
+      </div>
     </div>
   )
 }
