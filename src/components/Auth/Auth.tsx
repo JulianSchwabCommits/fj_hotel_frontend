@@ -3,15 +3,17 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { FaBars } from 'react-icons/fa'
 import './Auth.css'
 
+const API_BASE = 'http://localhost:8080'
+
 type AuthView = 'login' | 'register'
 
 interface RegisterFormState {
-  fullName: string
+  firstName: string
+  lastName: string
   email: string
   phoneNumber: string
+  birthdate: string
   address: string
-  city: string
-  country: string
   password: string
   confirmPassword: string
 }
@@ -40,19 +42,18 @@ export default function Auth() {
 
   // Register form state
   const [registerForm, setRegisterForm] = useState<RegisterFormState>({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phoneNumber: '',
+    birthdate: '',
     address: '',
-    city: '',
-    country: 'Swiss',
     password: '',
     confirmPassword: ''
   })
 
   // Form submission states
   const [loading, setLoading] = useState(false)
-  // Remove unused errors state
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
@@ -92,20 +93,28 @@ export default function Auth() {
     setSuccess(null)
     
     try {
-      // In a real app, this would be an API call to your backend
       console.log('Login attempt with:', loginForm)
       
-      // Simulate API call
-      setTimeout(() => {
-        // Mock successful login
-        const user = {
-          email: loginForm.email,
-          firstName: 'Test',
-          lastName: 'User'
+      const response = await fetch(`${API_BASE}/api/auth/signin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginForm)
+      })
+
+      const responseData = await response.json()
+      console.log('Server login response:', responseData)
+      
+      if (response.ok && responseData.success) {
+        // Save user data to localStorage for persistence across pages
+        const userData = {
+          userId: responseData.userId,
+          firstName: responseData.firstName,
+          lastName: responseData.lastName,
+          email: responseData.email
         }
-        
-        // Save user to localStorage
-        localStorage.setItem('currentUser', JSON.stringify(user))
+        localStorage.setItem('currentUser', JSON.stringify(userData))
         
         setSuccess('Login successful!')
         setLoading(false)
@@ -118,9 +127,12 @@ export default function Auth() {
         setTimeout(() => {
           navigate(redirectTo)
         }, 1000)
-      }, 1000)
+      } else {
+        setError(responseData.message || 'Invalid credentials')
+        setLoading(false)
+      }
     } catch (err) {
-      setError('Login failed. Please check your credentials.')
+      setError('Network error. Please check if the server is running.')
       setLoading(false)
     }
   }
@@ -139,12 +151,31 @@ export default function Auth() {
     }
     
     try {
-      // In a real app, this would be an API call to your backend
-      console.log('Registration attempt with:', registerForm)
+      // Create API payload matching the backend expectation
+      const apiPayload = {
+        firstName: registerForm.firstName,
+        lastName: registerForm.lastName,
+        email: registerForm.email,
+        phoneNumber: registerForm.phoneNumber,
+        password: registerForm.password,
+        birthdate: registerForm.birthdate,
+        address: registerForm.address
+      }
       
-      // Simulate API call
-      setTimeout(() => {
-        // Mock successful registration
+      console.log('Registration attempt with:', apiPayload)
+      
+      const response = await fetch(`${API_BASE}/api/auth/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(apiPayload)
+      })
+
+      const responseData = await response.json()
+      console.log('Server response:', responseData)
+      
+      if (response.ok && responseData.success) {
         setSuccess('Registration successful! You can now login.')
         setLoading(false)
         
@@ -156,9 +187,12 @@ export default function Auth() {
             email: registerForm.email
           })
         }, 1500)
-      }, 1000)
+      } else {
+        setError(responseData.message || 'Registration failed')
+        setLoading(false)
+      }
     } catch (err) {
-      setError('Registration failed. Please try again.')
+      setError('Network error. Please check if the server is running.')
       setLoading(false)
     }
   }
@@ -170,12 +204,20 @@ export default function Auth() {
     setSuccess(null)
     
     try {
-      // In a real app, this would be an API call to your backend
       console.log('Password reset attempt with:', forgotPasswordForm)
       
-      // Simulate API call
-      setTimeout(() => {
-        // Mock successful password reset
+      const response = await fetch(`${API_BASE}/api/auth/reset-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(forgotPasswordForm)
+      })
+
+      const responseData = await response.json()
+      console.log('Server response:', responseData)
+      
+      if (response.ok && responseData.success) {
         setSuccess('Password reset successful! You can now login with your new password.')
         setLoading(false)
         
@@ -187,9 +229,12 @@ export default function Auth() {
             email: forgotPasswordForm.email
           })
         }, 1500)
-      }, 1000)
+      } else {
+        setError(responseData.message || 'Password reset failed')
+        setLoading(false)
+      }
     } catch (err) {
-      setError('Password reset failed. Please try again.')
+      setError('Network error. Please check if the server is running.')
       setLoading(false)
     }
   }
@@ -255,106 +300,105 @@ export default function Auth() {
 
           {activeView === 'register' && (
             <form className="auth-form" onSubmit={handleRegisterSubmit}>
-              <div className="form-group">
-                <label htmlFor="fullName">Fullname</label>
-                <input 
-                  type="text" 
-                  id="fullName"
-                  value={registerForm.fullName}
-                  onChange={handleRegisterChange}
-                  required
-                  placeholder="John Doe"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="email">E-mail</label>
-                <input 
-                  type="email" 
-                  id="email"
-                  value={registerForm.email}
-                  onChange={handleRegisterChange}
-                  required
-                  placeholder="john.doe@gmail.com"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="phoneNumber">Phonenumber</label>
-                <input 
-                  type="tel" 
-                  id="phoneNumber"
-                  value={registerForm.phoneNumber}
-                  onChange={handleRegisterChange}
-                  required
-                  placeholder="+41 79 460 46 59"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="address">Address</label>
-                <input 
-                  type="text" 
-                  id="address"
-                  value={registerForm.address}
-                  onChange={handleRegisterChange}
-                  required
-                  placeholder="Birchenhof 21"
-                />
-              </div>
-              
               <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="city">City</label>
-                  <input 
-                    type="text" 
-                    id="city"
-                    value={registerForm.city}
-                    onChange={handleRegisterChange}
-                    required
-                    placeholder="Zürich"
-                  />
+                <div className="form-column">
+                  <div className="form-group">
+                    <label htmlFor="firstName">First Name</label>
+                    <input 
+                      type="text" 
+                      id="firstName"
+                      value={registerForm.firstName}
+                      onChange={handleRegisterChange}
+                      required
+                      placeholder="John"
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="email">E-mail</label>
+                    <input 
+                      type="email" 
+                      id="email"
+                      value={registerForm.email}
+                      onChange={handleRegisterChange}
+                      required
+                      placeholder="john.doe@gmail.com"
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="birthdate">Birth Date</label>
+                    <input 
+                      type="date" 
+                      id="birthdate"
+                      value={registerForm.birthdate}
+                      onChange={handleRegisterChange}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="password">Password</label>
+                    <input 
+                      type="password" 
+                      id="password"
+                      value={registerForm.password}
+                      onChange={handleRegisterChange}
+                      required
+                      placeholder="**********"
+                    />
+                  </div>
                 </div>
                 
-                <div className="form-group">
-                  <label htmlFor="country">Country</label>
-                  <select 
-                    id="country"
-                    value={registerForm.country}
-                    onChange={handleRegisterChange}
-                    required
-                  >
-                    <option value="Swiss">Swiss</option>
-                    <option value="Germany">Germany</option>
-                    <option value="Austria">Austria</option>
-                    <option value="France">France</option>
-                    <option value="Italy">Italy</option>
-                  </select>
+                <div className="form-column">
+                  <div className="form-group">
+                    <label htmlFor="lastName">Last Name</label>
+                    <input 
+                      type="text" 
+                      id="lastName"
+                      value={registerForm.lastName}
+                      onChange={handleRegisterChange}
+                      required
+                      placeholder="Doe"
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="phoneNumber">Phone Number</label>
+                    <input 
+                      type="tel" 
+                      id="phoneNumber"
+                      value={registerForm.phoneNumber}
+                      onChange={handleRegisterChange}
+                      required
+                      placeholder="+41 79 460 46 59"
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="address">Address</label>
+                    <input 
+                      type="text" 
+                      id="address"
+                      value={registerForm.address}
+                      onChange={handleRegisterChange}
+                      required
+                      placeholder="Birchenhof 21, 8001 Zurich, Switzerland"
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <input 
+                      type="password" 
+                      id="confirmPassword"
+                      value={registerForm.confirmPassword}
+                      onChange={handleRegisterChange}
+                      required
+                      placeholder="**********"
+                    />
+                  </div>
                 </div>
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input 
-                  type="password" 
-                  id="password"
-                  value={registerForm.password}
-                  onChange={handleRegisterChange}
-                  required
-                  placeholder="**********"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="confirmPassword">Password Bestätigen</label>
-                <input 
-                  type="password" 
-                  id="confirmPassword"
-                  value={registerForm.confirmPassword}
-                  onChange={handleRegisterChange}
-                  required
-                  placeholder="**********"
-                />
               </div>
               
               <button type="submit" className="auth-button" disabled={loading}>

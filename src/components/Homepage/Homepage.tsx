@@ -1,9 +1,38 @@
 import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { FaBars } from 'react-icons/fa'
 import './Homepage.css'
 
+interface UserData {
+  userId: number
+  firstName: string
+  lastName: string
+  email: string
+}
+
 export default function Homepage() {
   const navigate = useNavigate()
+  const [showMenu, setShowMenu] = useState<boolean>(false)
+  const [currentUser, setCurrentUser] = useState<UserData | null>(null)
+
+  useEffect(() => {
+    // Check if user is logged in
+    const user = localStorage.getItem('currentUser')
+    if (user) {
+      setCurrentUser(JSON.parse(user))
+    }
+
+    // Close menu when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      if (!target.closest('.menu-container')) {
+        setShowMenu(false)
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [])
 
   const handleBookClick = () => {
     // Check if user is logged in before navigating
@@ -16,19 +45,36 @@ export default function Homepage() {
   }
 
   const handleMenuClick = () => {
-    // This would toggle a menu in a real implementation
-    console.log('Menu clicked')
+    setShowMenu(!showMenu)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser')
+    setCurrentUser(null)
+    setShowMenu(false)
   }
 
   return (
     <div className="homepage-container">
       <div className="top-menu">
-        <button className="menu-button" onClick={handleMenuClick}>
-          <FaBars />
-        </button>
-        <div className="menu-items">
-          <div className="menu-item" onClick={() => navigate('/book')}>Book a Room</div>
-          <div className="menu-item" onClick={() => navigate('/auth')}>Login / Register</div>
+        <div className="menu-container">
+          <button className="menu-button" onClick={handleMenuClick}>
+            <FaBars />
+          </button>
+          {showMenu && (
+            <div className="menu-dropdown">
+              <div className="menu-item" onClick={() => navigate('/')}>Home</div>
+              <div className="menu-item" onClick={() => navigate('/book')}>Book a Room</div>
+              {currentUser ? (
+                <>
+                  <div className="menu-item" onClick={() => navigate('/orders')}>My Orders</div>
+                  <div className="menu-item" onClick={handleLogout}>Logout</div>
+                </>
+              ) : (
+                <div className="menu-item" onClick={() => navigate('/auth')}>Login / Register</div>
+              )}
+            </div>
+          )}
         </div>
       </div>
       
