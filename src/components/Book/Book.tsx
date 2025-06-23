@@ -263,7 +263,9 @@ export default function Book() {
       </div>
 
       <div className="book-content">
-        <h1 className="page-title">Room Booking</h1>
+        {currentStep === 'search' && <h1 className="page-title">Room Booking</h1>}
+        {currentStep === 'select' && <h1 className="page-title">Available Rooms</h1>}
+        {currentStep === 'confirm' && <h1 className="page-title">Booking Confirmation</h1>}
         
         {error && <div className="error-message">{error}</div>}
 
@@ -352,8 +354,6 @@ export default function Book() {
             <button className="back-button" onClick={goBackToSearch}>
               ← Back to Search
             </button>
-            
-            <h3>Available Rooms</h3>
             
             <div className="rooms-grid">
               {availableRooms.map(room => (
