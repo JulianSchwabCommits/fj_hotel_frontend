@@ -2,25 +2,39 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
+/* Ensure clean scrolling behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 .homepage-container {
   position: relative;
   width: 100%;
-  height: 100vh;
+  min-height: 200vh; /* Reduced from 300vh to limit scrolling */
   margin: 0;
   padding: 0;
   font-family: 'Montserrat', sans-serif;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 /* Top menu */
 .top-menu {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
+  right: 0;
   padding: 2rem;
   z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .menu-container {
@@ -67,14 +81,31 @@
   background-color: #f8f9fa;
 }
 
+/* Book Text Corner */
+.book-text-corner {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000;
+  cursor: pointer;
+  letter-spacing: 2px;
+  transition: color 0.3s ease;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.book-text-corner:hover {
+  color: #333;
+}
+
 /* Hotel Content */
 .hotel-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: 100vh;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 /* Hotel Title */
@@ -120,36 +151,76 @@
   align-self: flex-end;
 }
 
-/* Book Sidebar */
-.book-sidebar {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  width: 80px;
-  background-color: #000;
+/* Our Story Section */
+.our-story-section {
+  position: relative;
+  min-height: 100vh; /* Reduced from 120vh */
+  padding: 6rem 2rem; /* Reduced padding */
+  margin-top: 2rem; /* Reduced margin */
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0;
+  transform: translateY(80px);
+  transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.book-sidebar:hover {
-  background-color: #333;
+.our-story-section.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.book-text {
-  color: white;
-  font-size: 1.5rem;
+.story-content {
+  flex: 1;
+  max-width: 600px;
+  padding-right: 2rem;
+}
+
+.story-title {
+  font-size: 3.5rem;
   font-weight: 600;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
-  letter-spacing: 5px;
+  margin-bottom: 2rem;
+  color: #000;
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.2;
 }
 
-/* Mobile Responsiveness */
+.story-description {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #333;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  margin: 0;
+}
+
+.history-image-container {
+  position: relative;
+  flex: 0 0 400px;
+  height: 500px;
+  opacity: 0;
+  transform: translateY(150px) scale(0.8); /* Flies in from further down with scale effect */
+  transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1); /* Slower, more dramatic transition */
+  transition-delay: 0.5s; /* Increased delay */
+}
+
+.history-image-container.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.history-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Mobile Responsiveness Updates */
 @media (max-width: 768px) {
   .hotel-name {
     font-size: 4rem;
@@ -168,12 +239,34 @@
     max-width: 80%;
     margin-bottom: 1rem;
   }
-  
-  .book-sidebar {
-    width: 60px;
-  }
-  
-  .book-text {
+
+  .book-text-corner {
     font-size: 1.2rem;
+  }
+
+  .our-story-section {
+    flex-direction: column;
+    padding: 2rem 1rem;
+    text-align: center;
+  }
+
+  .story-content {
+    padding-right: 0;
+    margin-bottom: 2rem;
+  }
+
+  .story-title {
+    font-size: 2.5rem;
+  }
+
+  .story-description {
+    font-size: 1rem;
+  }
+
+  .history-image-container {
+    flex: none;
+    width: 100%;
+    max-width: 350px;
+    height: 400px;
   }
 }

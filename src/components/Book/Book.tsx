@@ -112,6 +112,16 @@ export default function Book() {
       return
     }
     
+    if (searchParams.checkinDate === searchParams.checkoutDate) {
+      setError('Check-in and check-out dates cannot be the same. Please select different dates.')
+      return
+    }
+    
+    if (new Date(searchParams.checkinDate) >= new Date(searchParams.checkoutDate)) {
+      setError('Check-out date must be after check-in date')
+      return
+    }
+    
     setLoading(true)
     setError(null)
     
