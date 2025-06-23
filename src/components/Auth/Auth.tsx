@@ -119,9 +119,9 @@ export default function Auth() {
         setSuccess('Login successful!')
         setLoading(false)
         
-        // Get the redirect URL from state, or default to book page
+        // Get the redirect URL from state, or default to homepage
         const { state } = location
-        const redirectTo = state && state.from ? state.from : '/book'
+        const redirectTo = state && state.from ? state.from : '/'
         
         // Redirect after a short delay
         setTimeout(() => {

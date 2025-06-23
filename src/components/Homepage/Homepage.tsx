@@ -71,7 +71,7 @@ export default function Homepage() {
                   <div className="menu-item" onClick={handleLogout}>Logout</div>
                 </>
               ) : (
-                <div className="menu-item" onClick={() => navigate('/auth')}>Login / Register</div>
+                <div className="menu-item" onClick={() => navigate('/auth', { state: { from: '/' } })}>Login / Register</div>
               )}
             </div>
           )}
